@@ -1,0 +1,27 @@
+---
+title: "STCAR:Vignette"
+author: "Yuliang Xu"
+date: "`r Sys.Date()`"
+output: 
+  github_document:
+    toc: true
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+```
+
+# installation
+
+```{r}
+devtools::install_github("yuliangxu/STCAR")
+```
