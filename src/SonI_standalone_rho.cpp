@@ -1251,139 +1251,140 @@ public:
 };
 
 
- //' @title Scalar on Image regression standalone
- //' @description
- //' Scalar on Image regression using the sparse-mean prior
- //' @name Scalar_on_Image
- //' @param y outcome
- //' @param X vector covariate
- //' @param M Matrix of functional images
- //' @param lambda thresholding parameter
- //' @param rho scaling parameter in CAR model
- //' @param B matrix of covariance neighborhood
- //' @param in_Sigma_inv
- //' @param in_D
- //' @param init_paras
- //' @param method
- //' 
- //' @export
- // [[Rcpp::export]]
- List SonI_CAVI_rho(arma::vec& y, arma::mat& X, 
-                      arma::mat& M, 
-                      double lambda,
-                      double rho, const arma::sp_mat& B,
-                      const arma::sp_mat& W,
-                      const arma::sp_mat& in_Sigma_inv,
-                      const arma::vec& in_D,
-                      CharacterVector method,
-                      List& init_paras,
-                      List& SGD_controls,
-                      List& Geweke_controls,
-                      List& sigmasq_step_controls,
-                      const arma::vec& in_delta_rho,
-                      double initial_sigma_sq = 1,
-                      double initial_sigma_beta_sq = 1,
-                      double initial_sigma_gamma_sq = 1,
-                      double initial_tau_mu_sq = 1,
-                      int mcmc_sample = 1000, 
-                      int burnin = 1000, 
-                      int thinning = 1,
-                      int max_iter = 1000,
-                      int begin_f_beta = 0,
-                      int f_beta_interval = 1,
-                      double paras_diff_tol = 1e-6,
-                      double SGD_step = 1e-2,
-                      int ELBO_stop = 1,
-                      double ELBO_diff_tol = 1e-6,
-                      int verbose = 5000,
-                      int save_profile = 1,
-                      bool trace_all_ELBO = false,
-                      bool include_Confounder = true,
-                      bool update_beta = true,
-                      bool update_gamma = true,
-                      bool update_delta_rho = true,                      
-                      bool display_progress = false){
-   
-   arma::wall_clock timer, timer_preprocess;
-   
-   timer.tic();
-   timer_preprocess.tic();
-   SonI_standalone model;
-   
-   Rcout<<"Scalar_on_Image...1"<<std::endl;
-   model.include_Confounder = include_Confounder;
-   model.load_data(y,X,M,lambda);
-   model.set_method(method);
-   Rcout<<"Scalar_on_Image...2"<<std::endl;
-   model.load_CAR(rho, B, W, in_Sigma_inv, in_D);
-   Rcout<<"Scalar_on_Image...3"<<std::endl;
-   model.display_progress = display_progress;
-   
-   if(model.method == 0){
-    model.set_gibbs_control(mcmc_sample, burnin, thinning, verbose, save_profile, begin_f_beta);
-   }else{
-    model.set_vb_control(max_iter,
-                        paras_diff_tol,
-                        ELBO_stop,
-                        ELBO_diff_tol,
-                        trace_all_ELBO,
-                        verbose,
-                        save_profile,
-                        begin_f_beta,
-                        update_beta,
-                        update_gamma,
-                        update_delta_rho);
-   
-   }
-    model.set_sigmasq_beta_annealing_control(sigmasq_step_controls);
-    // model.set_SGD_controls(SGD_controls, Geweke_controls);
-    if(model.method == 2){
-      model.set_SGD_controls(SGD_controls, Geweke_controls);
-    }
-    
-   std::cout << "set control done" << std::endl;
-   
-   model.set_paras_initial_values(init_paras,
-                                  in_delta_rho,
-                                  initial_sigma_sq, 
-                                  initial_sigma_beta_sq,
-                                  initial_sigma_gamma_sq,
-                                  initial_tau_mu_sq);
-   Rcout<<"Scalar_on_Image...6"<<std::endl;
-   
-   if(model.method == 1){
-     model.run_CAVI(f_beta_interval); 
-     Rcout<<"Scalar_on_Image...7-2"<<std::endl;
-   } else if(model.method == 2){
-     model.run_SGD(f_beta_interval);
-     Rcout<<"Scalar_on_Image...7-3"<<std::endl;
-   } else if(model.method == 0){
-     model.run_gibbs();
-     Rcout<<"Scalar_on_Image...7-1"<<std::endl;
-   }
-   
-   
-   double elapsed = timer.toc();
-   
-   
-   List output;
-   if(model.method >0){
-      output = List::create(Named("post_mean") = model.get_vb_post_mean(),
-                         Named("iter") = model.get_iter(),
-                         Named("trace") = model.get_vb_trace(),
-                         Named("vb_control") = model.get_vb_control(),
-                         Named("test_output") = model.get_test_output(),
-                         Named("elapsed") = elapsed);
-   
-   }else{
-      output = List::create(Named("post_mean") = model.get_gibbs_post_mean(),
-                         Named("iter") = model.get_iter(),
-                         Named("trace") = model.get_gibbs_trace(),
-                         Named("gibbs_control") = model.get_gibbs_control(),
-                         Named("test_output") = model.get_test_output(),
-                         Named("elapsed") = elapsed);
-   }
-   
-   return output;
-   
+//' @title Scalar on Image regression standalone
+//' @description
+//' Scalar on Image regression using the sparse-mean prior
+//' @name Scalar_on_Image
+//' @param y outcome
+//' @param X vector covariate
+//' @param M Matrix of functional images
+//' @param lambda thresholding parameter
+//' @param rho scaling parameter in CAR model
+//' @param B matrix of covariance neighborhood
+//' @param in_Sigma_inv
+//' @param in_D
+//' @param init_paras
+//' @param method
+//' @import Rcpp
+//' @useDynLib STCAR, .registration=TRUE
+//' @export
+//' [[Rcpp::export(rng = false)]]
+List SonI_CAVI_rho(arma::vec& y, arma::mat& X, 
+                    arma::mat& M, 
+                    double lambda,
+                    double rho, const arma::sp_mat& B,
+                    const arma::sp_mat& W,
+                    const arma::sp_mat& in_Sigma_inv,
+                    const arma::vec& in_D,
+                    CharacterVector method,
+                    List& init_paras,
+                    List& SGD_controls,
+                    List& Geweke_controls,
+                    List& sigmasq_step_controls,
+                    const arma::vec& in_delta_rho,
+                    double initial_sigma_sq = 1,
+                    double initial_sigma_beta_sq = 1,
+                    double initial_sigma_gamma_sq = 1,
+                    double initial_tau_mu_sq = 1,
+                    int mcmc_sample = 1000, 
+                    int burnin = 1000, 
+                    int thinning = 1,
+                    int max_iter = 1000,
+                    int begin_f_beta = 0,
+                    int f_beta_interval = 1,
+                    double paras_diff_tol = 1e-6,
+                    double SGD_step = 1e-2,
+                    int ELBO_stop = 1,
+                    double ELBO_diff_tol = 1e-6,
+                    int verbose = 5000,
+                    int save_profile = 1,
+                    bool trace_all_ELBO = false,
+                    bool include_Confounder = true,
+                    bool update_beta = true,
+                    bool update_gamma = true,
+                    bool update_delta_rho = true,                      
+                    bool display_progress = false){
+ 
+ arma::wall_clock timer, timer_preprocess;
+ 
+ timer.tic();
+ timer_preprocess.tic();
+ SonI_standalone model;
+ 
+ Rcout<<"Scalar_on_Image...1"<<std::endl;
+ model.include_Confounder = include_Confounder;
+ model.load_data(y,X,M,lambda);
+ model.set_method(method);
+ Rcout<<"Scalar_on_Image...2"<<std::endl;
+ model.load_CAR(rho, B, W, in_Sigma_inv, in_D);
+ Rcout<<"Scalar_on_Image...3"<<std::endl;
+ model.display_progress = display_progress;
+ 
+ if(model.method == 0){
+  model.set_gibbs_control(mcmc_sample, burnin, thinning, verbose, save_profile, begin_f_beta);
+ }else{
+  model.set_vb_control(max_iter,
+                      paras_diff_tol,
+                      ELBO_stop,
+                      ELBO_diff_tol,
+                      trace_all_ELBO,
+                      verbose,
+                      save_profile,
+                      begin_f_beta,
+                      update_beta,
+                      update_gamma,
+                      update_delta_rho);
+ 
  }
+  model.set_sigmasq_beta_annealing_control(sigmasq_step_controls);
+  // model.set_SGD_controls(SGD_controls, Geweke_controls);
+  if(model.method == 2){
+    model.set_SGD_controls(SGD_controls, Geweke_controls);
+  }
+  
+ std::cout << "set control done" << std::endl;
+ 
+ model.set_paras_initial_values(init_paras,
+                                in_delta_rho,
+                                initial_sigma_sq, 
+                                initial_sigma_beta_sq,
+                                initial_sigma_gamma_sq,
+                                initial_tau_mu_sq);
+ Rcout<<"Scalar_on_Image...6"<<std::endl;
+ 
+ if(model.method == 1){
+   model.run_CAVI(f_beta_interval); 
+   Rcout<<"Scalar_on_Image...7-2"<<std::endl;
+ } else if(model.method == 2){
+   model.run_SGD(f_beta_interval);
+   Rcout<<"Scalar_on_Image...7-3"<<std::endl;
+ } else if(model.method == 0){
+   model.run_gibbs();
+   Rcout<<"Scalar_on_Image...7-1"<<std::endl;
+ }
+ 
+ 
+ double elapsed = timer.toc();
+ 
+ 
+ List output;
+ if(model.method >0){
+    output = List::create(Named("post_mean") = model.get_vb_post_mean(),
+                       Named("iter") = model.get_iter(),
+                       Named("trace") = model.get_vb_trace(),
+                       Named("vb_control") = model.get_vb_control(),
+                       Named("test_output") = model.get_test_output(),
+                       Named("elapsed") = elapsed);
+ 
+ }else{
+    output = List::create(Named("post_mean") = model.get_gibbs_post_mean(),
+                       Named("iter") = model.get_iter(),
+                       Named("trace") = model.get_gibbs_trace(),
+                       Named("gibbs_control") = model.get_gibbs_control(),
+                       Named("test_output") = model.get_test_output(),
+                       Named("elapsed") = elapsed);
+ }
+ 
+ return output;
+ 
+}

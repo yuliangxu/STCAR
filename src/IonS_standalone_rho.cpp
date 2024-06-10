@@ -1130,23 +1130,23 @@ public:
 };
 
 //' @title Image on scalar regression
- //' @description
- //' Scalar on Image regression using the sparse-mean prior
- //' @name Image_on_scalar
- //' @param y outcome
- //' @param X vector covariate
- //' @param M Matrix of functional images
- //' @param lambda thresholding parameter
- //' @param rho scaling parameter in CAR model
- //' @param B matrix of covariance neighborhood
- //' @param in_Sigma_inv
- //' @param in_D
- //' @param init_paras
- //' @param batch_control
- //' @param method
- //' 
- //' @export
- // [[Rcpp::export]]
+//' @description
+//' Scalar on Image regression using the sparse-mean prior
+//' @name Image_on_scalar
+//' @param y outcome
+//' @param X vector covariate
+//' @param M Matrix of functional images
+//' @param lambda thresholding parameter
+//' @param rho scaling parameter in CAR model
+//' @param B matrix of covariance neighborhood
+//' @param in_Sigma_inv
+//' @param in_D
+//' @param init_paras
+//' @param batch_control
+//' @param method
+//' @useDynLib STCAR, .registration=TRUE
+//' @export
+// [[Rcpp::export]]
  List IonS_CAVI_rho(arma::mat& M, arma::vec& X, arma::mat& C, 
                       double lambda, List& basis,
                       double rho, const arma::sp_mat& B,
