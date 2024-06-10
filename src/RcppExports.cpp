@@ -168,6 +168,52 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// SonI_CAVI_rho
+List SonI_CAVI_rho(arma::vec& y, arma::mat& X, arma::mat& M, double lambda, double rho, const arma::sp_mat& B, const arma::sp_mat& W, const arma::sp_mat& in_Sigma_inv, const arma::vec& in_D, CharacterVector method, List& init_paras, List& SGD_controls, List& Geweke_controls, List& sigmasq_step_controls, const arma::vec& in_delta_rho, double initial_sigma_sq, double initial_sigma_beta_sq, double initial_sigma_gamma_sq, double initial_tau_mu_sq, int mcmc_sample, int burnin, int thinning, int max_iter, int begin_f_beta, int f_beta_interval, double paras_diff_tol, double SGD_step, int ELBO_stop, double ELBO_diff_tol, int verbose, int save_profile, bool trace_all_ELBO, bool include_Confounder, bool update_beta, bool update_gamma, bool update_delta_rho, bool display_progress);
+RcppExport SEXP _STCAR_SonI_CAVI_rho(SEXP ySEXP, SEXP XSEXP, SEXP MSEXP, SEXP lambdaSEXP, SEXP rhoSEXP, SEXP BSEXP, SEXP WSEXP, SEXP in_Sigma_invSEXP, SEXP in_DSEXP, SEXP methodSEXP, SEXP init_parasSEXP, SEXP SGD_controlsSEXP, SEXP Geweke_controlsSEXP, SEXP sigmasq_step_controlsSEXP, SEXP in_delta_rhoSEXP, SEXP initial_sigma_sqSEXP, SEXP initial_sigma_beta_sqSEXP, SEXP initial_sigma_gamma_sqSEXP, SEXP initial_tau_mu_sqSEXP, SEXP mcmc_sampleSEXP, SEXP burninSEXP, SEXP thinningSEXP, SEXP max_iterSEXP, SEXP begin_f_betaSEXP, SEXP f_beta_intervalSEXP, SEXP paras_diff_tolSEXP, SEXP SGD_stepSEXP, SEXP ELBO_stopSEXP, SEXP ELBO_diff_tolSEXP, SEXP verboseSEXP, SEXP save_profileSEXP, SEXP trace_all_ELBOSEXP, SEXP include_ConfounderSEXP, SEXP update_betaSEXP, SEXP update_gammaSEXP, SEXP update_delta_rhoSEXP, SEXP display_progressSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< arma::vec& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type M(MSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< double >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< const arma::sp_mat& >::type B(BSEXP);
+    Rcpp::traits::input_parameter< const arma::sp_mat& >::type W(WSEXP);
+    Rcpp::traits::input_parameter< const arma::sp_mat& >::type in_Sigma_inv(in_Sigma_invSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type in_D(in_DSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type method(methodSEXP);
+    Rcpp::traits::input_parameter< List& >::type init_paras(init_parasSEXP);
+    Rcpp::traits::input_parameter< List& >::type SGD_controls(SGD_controlsSEXP);
+    Rcpp::traits::input_parameter< List& >::type Geweke_controls(Geweke_controlsSEXP);
+    Rcpp::traits::input_parameter< List& >::type sigmasq_step_controls(sigmasq_step_controlsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type in_delta_rho(in_delta_rhoSEXP);
+    Rcpp::traits::input_parameter< double >::type initial_sigma_sq(initial_sigma_sqSEXP);
+    Rcpp::traits::input_parameter< double >::type initial_sigma_beta_sq(initial_sigma_beta_sqSEXP);
+    Rcpp::traits::input_parameter< double >::type initial_sigma_gamma_sq(initial_sigma_gamma_sqSEXP);
+    Rcpp::traits::input_parameter< double >::type initial_tau_mu_sq(initial_tau_mu_sqSEXP);
+    Rcpp::traits::input_parameter< int >::type mcmc_sample(mcmc_sampleSEXP);
+    Rcpp::traits::input_parameter< int >::type burnin(burninSEXP);
+    Rcpp::traits::input_parameter< int >::type thinning(thinningSEXP);
+    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
+    Rcpp::traits::input_parameter< int >::type begin_f_beta(begin_f_betaSEXP);
+    Rcpp::traits::input_parameter< int >::type f_beta_interval(f_beta_intervalSEXP);
+    Rcpp::traits::input_parameter< double >::type paras_diff_tol(paras_diff_tolSEXP);
+    Rcpp::traits::input_parameter< double >::type SGD_step(SGD_stepSEXP);
+    Rcpp::traits::input_parameter< int >::type ELBO_stop(ELBO_stopSEXP);
+    Rcpp::traits::input_parameter< double >::type ELBO_diff_tol(ELBO_diff_tolSEXP);
+    Rcpp::traits::input_parameter< int >::type verbose(verboseSEXP);
+    Rcpp::traits::input_parameter< int >::type save_profile(save_profileSEXP);
+    Rcpp::traits::input_parameter< bool >::type trace_all_ELBO(trace_all_ELBOSEXP);
+    Rcpp::traits::input_parameter< bool >::type include_Confounder(include_ConfounderSEXP);
+    Rcpp::traits::input_parameter< bool >::type update_beta(update_betaSEXP);
+    Rcpp::traits::input_parameter< bool >::type update_gamma(update_gammaSEXP);
+    Rcpp::traits::input_parameter< bool >::type update_delta_rho(update_delta_rhoSEXP);
+    Rcpp::traits::input_parameter< bool >::type display_progress(display_progressSEXP);
+    rcpp_result_gen = Rcpp::wrap(SonI_CAVI_rho(y, X, M, lambda, rho, B, W, in_Sigma_inv, in_D, method, init_paras, SGD_controls, Geweke_controls, sigmasq_step_controls, in_delta_rho, initial_sigma_sq, initial_sigma_beta_sq, initial_sigma_gamma_sq, initial_tau_mu_sq, mcmc_sample, burnin, thinning, max_iter, begin_f_beta, f_beta_interval, paras_diff_tol, SGD_step, ELBO_stop, ELBO_diff_tol, verbose, save_profile, trace_all_ELBO, include_Confounder, update_beta, update_gamma, update_delta_rho, display_progress));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_STCAR_IonS_CAVI_rho", (DL_FUNC) &_STCAR_IonS_CAVI_rho, 31},
@@ -179,6 +225,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_STCAR_Low_to_high_vec", (DL_FUNC) &_STCAR_Low_to_high_vec, 5},
     {"_STCAR_sample_truncated_normal_vec", (DL_FUNC) &_STCAR_sample_truncated_normal_vec, 4},
     {"_STCAR_truncated_normal_stats_vec", (DL_FUNC) &_STCAR_truncated_normal_stats_vec, 5},
+    {"_STCAR_SonI_CAVI_rho", (DL_FUNC) &_STCAR_SonI_CAVI_rho, 37},
     {NULL, NULL, 0}
 };
 

@@ -50,7 +50,28 @@ IonS_CAVI_rho(
 
 \item{B}{matrix of covariance neighborhood}
 
+\item{in_Sigma_inv}{inverse of the covariance matrix obtained from CAR model}
+
+\item{in_D}{diagonal vector, obtained from CAR model}
+
+\item{method}{method for the optimization: "CAVI" or "SGD"(SSVI in the paper)}
+
+\item{init_paras}{initial values for the parameters}
+
 \item{y}{outcome}
+
+\item{batch_control}{control parameters for the batch algorithm}
+}
+\value{
+A List object with the following component
+\itemize{
+\item post_mean posterior mean of the parameters
+\item iter total number of iterations
+\item trace trace of each parameter
+\item vb_control control variables
+\item test_output to output temp variables, for testing only
+\item elapsed time used
+}
 }
 \description{
 Scalar on Image regression using the sparse-mean prior

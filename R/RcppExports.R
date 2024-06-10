@@ -11,47 +11,57 @@
 #' @param lambda thresholding parameter
 #' @param rho scaling parameter in CAR model
 #' @param B matrix of covariance neighborhood
-#' @param in_Sigma_inv
-#' @param in_D
-#' @param init_paras
-#' @param batch_control
-#' @param method
+#' @param in_Sigma_inv inverse of the covariance matrix obtained from CAR model
+#' @param in_D diagonal vector, obtained from CAR model
+#' @param init_paras initial values for the parameters
+#' @param batch_control control parameters for the batch algorithm
+#' @param method method for the optimization: "CAVI" or "SGD"(SSVI in the paper)
 #' @useDynLib STCAR, .registration=TRUE
 #' @export
+#' @return A List object with the following component
+#' \itemize{
+#' \item post_mean posterior mean of the parameters
+#' \item iter total number of iterations
+#' \item trace trace of each parameter
+#' \item vb_control control variables
+#' \item test_output to output temp variables, for testing only
+#' \item elapsed time used
+#' }
+#' 
 IonS_CAVI_rho <- function(M, X, C, lambda, basis, rho, B, W, in_Sigma_inv, in_D, method, init_paras, sigmasq_step_controls, in_delta_rho, SGD_controls, initial_sigma_sq = 1, initial_tau_mu_sq = 0.01, initial_sigma_alpha_sq = 1, initial_sigma_zeta_sq = 1, initial_sigma_eta_sq = 1, eta_freq = 1L, max_iter = 1000L, mcmc_sample = 1000L, burnin = 1000L, thinning = 1L, begin_f_alpha = 0L, f_alpha_interval = 1L, paras_diff_tol = 1e-6, verbose = 5000L, save_profile = 1L, display_progress = FALSE) {
-    .Call('_STCAR_IonS_CAVI_rho', PACKAGE = 'STCAR', M, X, C, lambda, basis, rho, B, W, in_Sigma_inv, in_D, method, init_paras, sigmasq_step_controls, in_delta_rho, SGD_controls, initial_sigma_sq, initial_tau_mu_sq, initial_sigma_alpha_sq, initial_sigma_zeta_sq, initial_sigma_eta_sq, eta_freq, max_iter, mcmc_sample, burnin, thinning, begin_f_alpha, f_alpha_interval, paras_diff_tol, verbose, save_profile, display_progress)
+    .Call(`_STCAR_IonS_CAVI_rho`, M, X, C, lambda, basis, rho, B, W, in_Sigma_inv, in_D, method, init_paras, sigmasq_step_controls, in_delta_rho, SGD_controls, initial_sigma_sq, initial_tau_mu_sq, initial_sigma_alpha_sq, initial_sigma_zeta_sq, initial_sigma_eta_sq, eta_freq, max_iter, mcmc_sample, burnin, thinning, begin_f_alpha, f_alpha_interval, paras_diff_tol, verbose, save_profile, display_progress)
 }
 
 geweke_test <- function(x, p_thresh = 0.05, frac1 = 0.1, frac2 = 0.5) {
-    .Call('_STCAR_geweke_test', PACKAGE = 'STCAR', x, p_thresh, frac1, frac2)
+    .Call(`_STCAR_geweke_test`, x, p_thresh, frac1, frac2)
 }
 
 complement <- function(start, end, n) {
-    .Call('_STCAR_complement', PACKAGE = 'STCAR', start, end, n)
+    .Call(`_STCAR_complement`, start, end, n)
 }
 
 High_to_low_vec <- function(High_vec, L, Phi_Q, region_idx, L_idx) {
-    .Call('_STCAR_High_to_low_vec', PACKAGE = 'STCAR', High_vec, L, Phi_Q, region_idx, L_idx)
+    .Call(`_STCAR_High_to_low_vec`, High_vec, L, Phi_Q, region_idx, L_idx)
 }
 
 High_to_low <- function(High_mat, L, Phi_Q, region_idx, L_idx) {
-    .Call('_STCAR_High_to_low', PACKAGE = 'STCAR', High_mat, L, Phi_Q, region_idx, L_idx)
+    .Call(`_STCAR_High_to_low`, High_mat, L, Phi_Q, region_idx, L_idx)
 }
 
 Low_to_high <- function(Low_mat, p, Phi_Q, region_idx, L_idx) {
-    .Call('_STCAR_Low_to_high', PACKAGE = 'STCAR', Low_mat, p, Phi_Q, region_idx, L_idx)
+    .Call(`_STCAR_Low_to_high`, Low_mat, p, Phi_Q, region_idx, L_idx)
 }
 
 Low_to_high_vec <- function(Low_vec, p, Phi_Q, region_idx, L_idx) {
-    .Call('_STCAR_Low_to_high_vec', PACKAGE = 'STCAR', Low_vec, p, Phi_Q, region_idx, L_idx)
+    .Call(`_STCAR_Low_to_high_vec`, Low_vec, p, Phi_Q, region_idx, L_idx)
 }
 
 sample_truncated_normal_vec <- function(mu, sigma, lambda, delta) {
-    .Call('_STCAR_sample_truncated_normal_vec', PACKAGE = 'STCAR', mu, sigma, lambda, delta)
+    .Call(`_STCAR_sample_truncated_normal_vec`, mu, sigma, lambda, delta)
 }
 
 truncated_normal_stats_vec <- function(mu, sigma, lambda, delta, output) {
-    .Call('_STCAR_truncated_normal_stats_vec', PACKAGE = 'STCAR', mu, sigma, lambda, delta, output)
+    .Call(`_STCAR_truncated_normal_stats_vec`, mu, sigma, lambda, delta, output)
 }
 
 #' @title Scalar on Image regression standalone
@@ -64,13 +74,24 @@ truncated_normal_stats_vec <- function(mu, sigma, lambda, delta, output) {
 #' @param lambda thresholding parameter
 #' @param rho scaling parameter in CAR model
 #' @param B matrix of covariance neighborhood
-#' @param in_Sigma_inv
-#' @param in_D
-#' @param init_paras
-#' @param method
+#' @param in_Sigma_inv inverse of the covariance matrix obtained from CAR model
+#' @param in_D diagonal vector, obtained from CAR model
+#' @param init_paras initial values for the parameters
+#' @param method method for the optimization: "CAVI" or "SGD"(SSVI in the paper)
 #' @import Rcpp
 #' @useDynLib STCAR, .registration=TRUE
 #' @export
-#' [[Rcpp::export(rng = false)]]
-NULL
+#' @return A List object with the following component
+#' \itemize{
+#' \item post_mean posterior mean of the parameters
+#' \item iter total number of iterations
+#' \item trace trace of each parameter
+#' \item vb_control control variables
+#' \item test_output to output temp variables, for testing only
+#' \item elapsed time used
+#' }
+#' 
+SonI_CAVI_rho <- function(y, X, M, lambda, rho, B, W, in_Sigma_inv, in_D, method, init_paras, SGD_controls, Geweke_controls, sigmasq_step_controls, in_delta_rho, initial_sigma_sq = 1, initial_sigma_beta_sq = 1, initial_sigma_gamma_sq = 1, initial_tau_mu_sq = 1, mcmc_sample = 1000L, burnin = 1000L, thinning = 1L, max_iter = 1000L, begin_f_beta = 0L, f_beta_interval = 1L, paras_diff_tol = 1e-6, SGD_step = 1e-2, ELBO_stop = 1L, ELBO_diff_tol = 1e-6, verbose = 5000L, save_profile = 1L, trace_all_ELBO = FALSE, include_Confounder = TRUE, update_beta = TRUE, update_gamma = TRUE, update_delta_rho = TRUE, display_progress = FALSE) {
+    .Call(`_STCAR_SonI_CAVI_rho`, y, X, M, lambda, rho, B, W, in_Sigma_inv, in_D, method, init_paras, SGD_controls, Geweke_controls, sigmasq_step_controls, in_delta_rho, initial_sigma_sq, initial_sigma_beta_sq, initial_sigma_gamma_sq, initial_tau_mu_sq, mcmc_sample, burnin, thinning, max_iter, begin_f_beta, f_beta_interval, paras_diff_tol, SGD_step, ELBO_stop, ELBO_diff_tol, verbose, save_profile, trace_all_ELBO, include_Confounder, update_beta, update_gamma, update_delta_rho, display_progress)
+}
 

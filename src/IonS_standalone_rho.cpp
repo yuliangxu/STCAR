@@ -1139,13 +1139,23 @@ public:
 //' @param lambda thresholding parameter
 //' @param rho scaling parameter in CAR model
 //' @param B matrix of covariance neighborhood
-//' @param in_Sigma_inv
-//' @param in_D
-//' @param init_paras
-//' @param batch_control
-//' @param method
+//' @param in_Sigma_inv inverse of the covariance matrix obtained from CAR model
+//' @param in_D diagonal vector, obtained from CAR model
+//' @param init_paras initial values for the parameters
+//' @param batch_control control parameters for the batch algorithm
+//' @param method method for the optimization: "CAVI" or "SGD"(SSVI in the paper)
 //' @useDynLib STCAR, .registration=TRUE
 //' @export
+//' @return A List object with the following component
+//' \itemize{
+//' \item post_mean posterior mean of the parameters
+//' \item iter total number of iterations
+//' \item trace trace of each parameter
+//' \item vb_control control variables
+//' \item test_output to output temp variables, for testing only
+//' \item elapsed time used
+//' }
+//' 
 // [[Rcpp::export]]
  List IonS_CAVI_rho(arma::mat& M, arma::vec& X, arma::mat& C, 
                       double lambda, List& basis,

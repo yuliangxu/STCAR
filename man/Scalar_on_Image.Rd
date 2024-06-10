@@ -2,7 +2,49 @@
 % Please edit documentation in R/RcppExports.R
 \name{Scalar_on_Image}
 \alias{Scalar_on_Image}
+\alias{SonI_CAVI_rho}
 \title{Scalar on Image regression standalone}
+\usage{
+SonI_CAVI_rho(
+  y,
+  X,
+  M,
+  lambda,
+  rho,
+  B,
+  W,
+  in_Sigma_inv,
+  in_D,
+  method,
+  init_paras,
+  SGD_controls,
+  Geweke_controls,
+  sigmasq_step_controls,
+  in_delta_rho,
+  initial_sigma_sq = 1,
+  initial_sigma_beta_sq = 1,
+  initial_sigma_gamma_sq = 1,
+  initial_tau_mu_sq = 1,
+  mcmc_sample = 1000L,
+  burnin = 1000L,
+  thinning = 1L,
+  max_iter = 1000L,
+  begin_f_beta = 0L,
+  f_beta_interval = 1L,
+  paras_diff_tol = 1e-06,
+  SGD_step = 0.01,
+  ELBO_stop = 1L,
+  ELBO_diff_tol = 1e-06,
+  verbose = 5000L,
+  save_profile = 1L,
+  trace_all_ELBO = FALSE,
+  include_Confounder = TRUE,
+  update_beta = TRUE,
+  update_gamma = TRUE,
+  update_delta_rho = TRUE,
+  display_progress = FALSE
+)
+}
 \arguments{
 \item{y}{outcome}
 
@@ -15,6 +57,25 @@
 \item{rho}{scaling parameter in CAR model}
 
 \item{B}{matrix of covariance neighborhood}
+
+\item{in_Sigma_inv}{inverse of the covariance matrix obtained from CAR model}
+
+\item{in_D}{diagonal vector, obtained from CAR model}
+
+\item{method}{method for the optimization: "CAVI" or "SGD"(SSVI in the paper)}
+
+\item{init_paras}{initial values for the parameters}
+}
+\value{
+A List object with the following component
+\itemize{
+\item post_mean posterior mean of the parameters
+\item iter total number of iterations
+\item trace trace of each parameter
+\item vb_control control variables
+\item test_output to output temp variables, for testing only
+\item elapsed time used
+}
 }
 \description{
 Scalar on Image regression using the sparse-mean prior
