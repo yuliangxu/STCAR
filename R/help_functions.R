@@ -5,7 +5,9 @@ library(RSpectra)
 library(ggpubr)
 
 #' Generate grids for 4 regions
-#' 
+#'@param side side length of the square grid
+#'@param d dimension
+#'@export
 gen_grids_df_4region = function(side,d = 2){
   num_region = 4
   region_idx = vector("list",num_region)

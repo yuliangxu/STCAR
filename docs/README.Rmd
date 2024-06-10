@@ -23,5 +23,58 @@ knitr::opts_chunk$set(
 # installation
 
 ```{r}
-devtools::install_github("yuliangxu/STCAR")
+devtools::install_github("yuliangxu/STCAR",force = T)
 ```
+
+# Scalar-on-image regression
+
+## generate testing case
+
+```{r}
+# common
+library(STCAR)
+q = 2
+SGD_subsample_size = 200
+in_scale = 1
+side  = 40
+
+n = 600
+all_shape = c("circle","triangle", "square","Tshape","UMlogo")
+
+
+region_idx = gen_grids_df_4region(side)
+p = side*side
+
+grids_df_loc = create_img_coords(imgdim = c(side/2, side/2))
+beta_img = spatial_sparse_signals(grids_df_loc,p=1L,shape = "Tshape",
+                                  effect_size=1.0,smooth=0.1,radius = 0.3)
+
+beta_img2 = spatial_sparse_signals(grids_df_loc,p=1L,shape = "circle",
+                                   effect_size=1.0,smooth=0.1,radius = 0.5)
+
+beta_img3 = spatial_sparse_signals(grids_df_loc,p=1L,shape = "UMlogo",
+                                   effect_size=1.0,smooth=1.5,radius = 0.3)
+map_to_range = function(x,range=c(0,1)){
+  (x-min(x))/(max(x)-min(x))*(range[2]-range[1])+range[1]
+}
+beta_img3$img[beta_img3$img!=0] = map_to_range(beta_img3$img[beta_img3$img!=0], range = c(0.2,1))
+
+
+beta_img4 = spatial_sparse_signals(grids_df_loc,p=1L,shape = "square",
+                                   effect_size=1.0,smooth=0.1,radius = 0.3)
+in_beta_img = rep(0,p)
+in_beta_img[region_idx[[1]]] = beta_img$img
+in_beta_img[region_idx[[2]]] = - beta_img2$img
+in_beta_img[region_idx[[3]]] = -beta_img3$img
+in_beta_img[region_idx[[4]]] = beta_img4$img
+grids_df = create_img_coords(imgdim = c(side, side))
+plot_2D_funcs(in_beta_img, grids_df)
+
+
+# generate data
+datsim = generate_SonI_data(in_beta_img,n,q = q,
+                            sigma_C = 1,
+                            sigma_M = 1, sigma_Y=0.1,
+                            SNR = NULL, include_Confounder = F)
+```
+
