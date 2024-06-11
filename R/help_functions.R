@@ -3,6 +3,7 @@ library(viridis)
 library(BayesGPfit)
 library(RSpectra)
 library(ggpubr)
+library(RANN)
 
 #' Generate grids for 4 regions
 #'@param side side length of the square grid
@@ -245,7 +246,12 @@ neighbor_sparse_mat = function( grids, scale = 2, rho = 0.3,
   return(list(B = B, D = D_vec, rho = rho, inv_Sigma = Sigma_inv))
 }
 
-
+#' Generate neighborhood matrix for the CAR model
+#'@param grids the location of the data
+#'@param scale scale parameter to resize the distance
+#'@param rho the correlation parameter
+#'@param bandwidth the bandwidth of the neighborhood
+#'@export
 neighbor_sparse_mat_RANN = function( grids, scale = 2, rho = 0.3,
                                       bandwidth = NULL,if_beep=F){
   n = dim(grids)[1]
@@ -348,6 +354,12 @@ neighbor_mat = function( grids, method = "l2",scale = 2, rho = 0.3,
   return(list(B = W, D = D_vec, rho = rho, inv_Sigma = Sigma_inv))
 }
 
+
+#' Simulate scalar on image regression data
+#'@param beta_img the true image
+#'@param n the sample size
+#'@param q the number of confounders
+#'@export
 generate_SonI_data = function(beta_img, n,q=2,sigma_M = 0.1,
                               sigma_C = 1,include_Confounder = T,
                                    sigma_Y = 0.1, SNR = NULL){
@@ -390,7 +402,12 @@ generate_SonI_data = function(beta_img, n,q=2,sigma_M = 0.1,
 }
 
 
-
+#' Simulate image on scalar regression data
+#'@param alpha_img the true image
+#'@param basis_sq the basis object
+#'@param n the sample size
+#'@param q the number of confounders
+#'@export
 generate_IonS_data = function(alpha_img, basis_sq,
                               n,
                               q=2,sigma_M = 0.1){
