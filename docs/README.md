@@ -1,28 +1,17 @@
----
-title: "STCAR:Vignette"
-author: "Yuliang Xu"
-date: "`r Sys.Date()`"
-output: 
-  github_document:
-    toc: true
-    toc_depth: 3
-vignette: >
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
+STCAR:Vignette
+================
+Yuliang Xu
+2024-06-10
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-
-```
+- [installation](#installation)
+- [Scalar-on-image regression](#scalar-on-image-regression)
+  - [generate testing case](#generate-testing-case)
+  - [Run SonI model](#run-soni-model)
+  - [check results](#check-results)
 
 # installation
 
-```{r eval=FALSE}
+``` r
 devtools::install_github("yuliangxu/STCAR",force = T)
 ```
 
@@ -30,7 +19,7 @@ devtools::install_github("yuliangxu/STCAR",force = T)
 
 ## generate testing case
 
-```{r}
+``` r
 # common
 library(STCAR)
 q = 2
@@ -69,6 +58,11 @@ in_beta_img[region_idx[[3]]] = -beta_img3$img
 in_beta_img[region_idx[[4]]] = beta_img4$img
 grids_df = create_img_coords(imgdim = c(side, side))
 plot_2D_funcs(in_beta_img, grids_df)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+
+``` r
 
 
 # generate data
@@ -79,7 +73,7 @@ datsim = generate_SonI_data(in_beta_img,n,q = q,
 
 ## Run SonI model
 
-```{r}
+``` r
 # CAVI --------------------------------------------------------------------
 
 cv_model <- glmnet::cv.glmnet( cbind(datsim$M) ,datsim$Y, 
@@ -94,10 +88,14 @@ init_ridge = list(beta = coef(y1)[1:p+1] + rnorm(p,sd=0.001),
 in_init = init_ridge
 
 CAR = neighbor_sparse_mat_RANN(grids_df, bandwidth = 8, rho = 0.9, scale = 1)
+#> [1] "begin W creation ..."
+#> ================================================================================
 
 sigmasq_step_controls = list(a=0.5,b=1,gamma = -0.7)
 SGD_control = list(step = 1e-3/2, subsample_size = 200, protect_percent = 0.5)
 summary(sapply(1:2900,function(x){with(sigmasq_step_controls, a*(b+x)^gamma)}))
+#>     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+#> 0.001884 0.002304 0.003060 0.005633 0.004966 0.307786
 
 
 cavi_rho = SonI_CAVI_rho(y = datsim$Y, 
@@ -127,16 +125,28 @@ cavi_rho = SonI_CAVI_rho(y = datsim$Y,
                          verbose = 100,
                          trace_all_ELBO = T,
                          display_progress = F)
+#> Scalar_on_Image...1
+#> Scalar on image: Loading data....
+#> Scalar on image: Load data successful
+#> Scalar_on_Image...2
+#> Sparse mean: Loading CAR...
+#> Sparse mean: Load CAR successful
+#> Scalar_on_Image...3
+#> Scalar on image: set initial values successful
+#> Scalar_on_Image...6
+#> Scalar on image: CAVI converged at iter: 434; paras_diff=9.94664e-09
+#> Scalar_on_Image...7-2
 
 CAVI = list(beta = cavi_rho$post_mean$beta,
             IP = cavi_rho$post_mean$IP,
             time = cavi_rho$elapsed,
             iter = cavi_rho$iter)
 ```
+
 ## check results
 
-```{r}
+``` r
 plot_2D_funcs(CAVI$beta, grids_df)
-
 ```
 
+![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
